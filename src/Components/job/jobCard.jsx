@@ -1,7 +1,8 @@
 import React from "react";
-import { Box, Paper, Grid } from "@mui/material";
+import { Box, Paper, Grid, Button } from "@mui/material";
 import resp from "../../data.json";
 import { borderRadius } from "@mui/system";
+import "../../index.css"
 const New = () => (
   <div
     className="new"
@@ -47,6 +48,7 @@ const JobCard = ({
   location,
   tags,
   featured,
+  filterHandler
 }) => {
   // const {
   //   company,
@@ -62,7 +64,6 @@ const JobCard = ({
   //   featured,
   // } = resp[0];
 
-  console.log("new job is", resp[0], company);
   const filterTags = [role, level, ...tags];
   return (
     <Box
@@ -154,12 +155,13 @@ const JobCard = ({
                 alignItems: "center",
                 flexWrap: "wrap",
                 justifyContent: { lg: "end" },
-                marginLeft: { md: "16.5%" , lg:"0"},
+                marginLeft: { md: "16.5%", lg: "0" },
+                rowGap:"5px",
               }}
             >
-              {filterTags.map((tag) => (
-                <div
-                  className="filter-tags"
+              {filterTags.map((tag, index) => (
+                <Button
+                  className="filter-tag"
                   style={{
                     display: "flex",
                     backgroundColor: "hsl(180, 52%, 96%)",
@@ -169,10 +171,15 @@ const JobCard = ({
                     padding: "5px",
                     borderRadius: "4px",
                     marginRight: "10px",
+                    textTransform: "none",
+
+                    
                   }}
+                  key = {index}
+                  onClick = {(event)=> filterHandler(event.target.innerText)}
                 >
                   {tag}
-                </div>
+                </Button>
               ))}
             </Grid>
           </Grid>
