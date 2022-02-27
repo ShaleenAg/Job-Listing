@@ -1,7 +1,5 @@
 import React from "react";
 import { Box, Paper, Grid, Button } from "@mui/material";
-import resp from "../../data.json";
-import { borderRadius } from "@mui/system";
 import "../../index.css"
 const New = () => (
   <div
