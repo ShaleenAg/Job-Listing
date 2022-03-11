@@ -1,7 +1,7 @@
 import React from "react";
 import { Box } from "@mui/material";
 import headerMobile from "../images/bg-header-mobile.svg";
-import headerDesktop from "../images/bg-header-desktop.svg";
+import headerDesktop from   "../images/bg-header-desktop.svg";
 const Header = () => {
   return (
     <Box

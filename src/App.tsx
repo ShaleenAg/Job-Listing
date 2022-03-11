@@ -9,12 +9,28 @@ import "./index.css";
 import Header from "./Components/header";
 import SearchBar from "./Components/searchBar";
 import JobCard from "./Components/job/jobCard";
+
+interface responseDataProps {
+  id: number;
+  company: string;
+  logo: string;
+  newJob: boolean;
+  featured: boolean;
+  position: string;
+  role: string;
+  level: string;
+  postedAt: string;
+  type: string;
+  location: string;
+  tags: string[];
+}
+
 function App() {
-  const [filters, setFilters] = useState([]);
-  const [filteredData, setFilterData] = useState([]);
+  const [filters, setFilters] = useState<string[]>([]);
+  const [filteredData, setFilterData] = useState<responseDataProps[]>([]);
 
   const FilterTags = () => {
-    console.log('FilterTags triggered')
+    console.log("FilterTags triggered");
     return (
       <div
         className="filters"
@@ -55,10 +71,14 @@ function App() {
                 data-filter={filter}
                 elevation={0}
                 className="close-button"
-                onClick={(event) => {
-                  console.log("close button", event.target.dataset.filter);
+                onClick={(
+                  event: React.MouseEvent<HTMLDivElement, MouseEvent>
+                ) => {
                   setFilters(
-                    filters.filter((fil) => fil !== event.target.dataset.filter)
+                    filters.filter(
+                      (fil) =>
+                        fil !== (event.target as HTMLElement).dataset.filter
+                    )
                   );
                 }}
                 sx={{
@@ -93,19 +113,19 @@ function App() {
         });
       });
       setFilterData(newData);
-      console.log('filtered jobs')
+      console.log("filtered jobs");
     } else {
       setFilterData(responseData);
     }
   }, [filters]);
 
   const filterHandler = (filter) => {
-    console.log('filter handler triggered')
+    console.log("filter handler triggered");
     const index = filters.findIndex(
       (element) => filter.toLowerCase() === element.toLowerCase()
     );
     if (index === -1) setFilters([...filters, filter]);
-    else console.log('filters already present', filter)
+    else console.log("filters already present", filter);
   };
 
   useEffect(() => {
