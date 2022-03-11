@@ -12,7 +12,7 @@ import {
 import { useState, useRef } from "react";
 
 const topResponses = ["HTML", "Senior", "Junior", "React", "CSS"];
-const searchSuggestions = [
+const searchSuggestions: string[] = [
   "Fullstack",
   "Midweight",
   "Python",
@@ -29,8 +29,10 @@ const searchSuggestions = [
   "Vue",
   "Django",
 ];
-
-const TopSuggestions = ({ filterHandler }) => {
+interface TopSuggestionsProps {
+  filterHandler: (filter: string) => void;
+}
+const TopSuggestions = ({ filterHandler }: TopSuggestionsProps) => {
   return (
     <Paper
       elevation={5}
@@ -46,9 +48,12 @@ const TopSuggestions = ({ filterHandler }) => {
                   paddingTop: "20px",
                   paddingBottom: "10px",
                 }}
-                onClick={(event) => {
-                  console.log("top suggestion clicked")
-                  filterHandler(event.target.textContent);
+                onClick={(
+                  event: React.MouseEvent<HTMLDivElement, MouseEvent>
+                ) => {
+                  console.log("top suggestion clicked");
+                  const text = (event.target as Node).textContent || "";
+                  filterHandler(text);
                 }}
               >
                 <ListItemText
@@ -69,7 +74,11 @@ const TopSuggestions = ({ filterHandler }) => {
   );
 };
 
-const Suggestions = ({ responses }) => {
+interface SuggestionProps {
+  responses: JSX.Element[];
+}
+
+const Suggestions = ({ responses }: SuggestionProps) => {
   return (
     <Paper
       elevation={5}
@@ -86,17 +95,21 @@ const Suggestions = ({ responses }) => {
     </Paper>
   );
 };
-const SearchBar = ({ filterHandler }) => {
-  const [searchResponses, setSearchResponses] = useState([]);
+interface SearchBarProps {
+  filterHandler: (filter: string) => void;
+}
+const SearchBar = ({ filterHandler }: SearchBarProps) => {
+  const intialResponse: JSX.Element[] = [];
+  const [searchResponses, setSearchResponses] = useState(intialResponse);
   const [isFocused, setFocus] = useState(false);
-  const searchRef = useRef(null);
+  const searchRef = useRef<HTMLInputElement | null>(null);
   const [showSuggestions, setSuggestions] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
-  const buildSuggestions = (eventValue) => {
+  const buildSuggestions = (eventValue: string) => {
     setSearchResponses(
       searchSuggestions
-        .filter((suggestion) => {
+        .filter((suggestion: string) => {
           const lowerSuggestion = suggestion.toLowerCase();
           const val = eventValue.toLowerCase();
           return lowerSuggestion.indexOf(val) > -1;
@@ -115,7 +128,8 @@ const SearchBar = ({ filterHandler }) => {
               }}
               onClick={(event) => {
                 console.log("build suggestions item clicked", event);
-                filterHandler(event.target.textContent);
+                const text = (event.target as Node).textContent || "";
+                filterHandler(text);
               }}
             >
               {suggestion.substring(0, ind)}
@@ -129,7 +143,7 @@ const SearchBar = ({ filterHandler }) => {
     );
   };
 
-  const handleOnChange = (event) => {
+  const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const eventValue = event.target.value;
     console.log("current value is ", eventValue);
     if (eventValue !== "") {
@@ -199,22 +213,21 @@ const SearchBar = ({ filterHandler }) => {
             fontSize: "14px",
           }}
           onClick={() => {
-            const val = searchRef.current.value.toLowerCase();
-            const index = searchSuggestions.findIndex((element) => {
-              return element.toLowerCase() === val;
-            });
-            if (index > -1) filterHandler(searchSuggestions[index]);
-            else filterHandler(searchRef.current.value);
+            if (searchRef.current !== null) {
+              const val = searchRef.current.value;
+              const index = searchSuggestions.findIndex((element) => {
+                return element.toLowerCase() === val;
+              });
+              if (index > -1) filterHandler(searchSuggestions[index]);
+              else filterHandler(val);
+            }
           }}
         >
           Submit
         </Button>
       </Paper>
       {isFocused && showSuggestions && searchValue === "" && (
-        <TopSuggestions
-          filterHandler={filterHandler}
-          
-        />
+        <TopSuggestions filterHandler={filterHandler} />
       )}
 
       {isFocused && !showSuggestions && searchValue !== "" && (
